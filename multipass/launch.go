@@ -22,6 +22,7 @@ type LaunchReqV2 struct {
 	Name          string
 	Memory        string
 	CloudInitFile string
+	SayHello      string
 }
 
 func Launch(launchReq *LaunchReq) (*Instance, error) {
@@ -66,6 +67,10 @@ func LaunchV2(launchReqV2 *LaunchReqV2) (*Instance, error) {
 
 	if launchReqV2.CloudInitFile != "" {
 		args = append(args, "--cloud-init", launchReqV2.CloudInitFile)
+	}
+
+	if launchReqV2.CloudInitFile != "" {
+		args = append(args, "--say-hello", launchReqV2.SayHello)
 	}
 
 	result := exec.Command("multipass", args...)
