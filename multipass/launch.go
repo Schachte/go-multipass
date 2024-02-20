@@ -2,6 +2,7 @@ package multipass
 
 import (
 	"errors"
+	"fmt"
 	"os/exec"
 	"strings"
 )
@@ -16,13 +17,14 @@ type LaunchReq struct {
 }
 
 type LaunchReqV2 struct {
-	Image         string
-	CPUS          string
-	Disk          string
-	Name          string
-	Memory        string
-	CloudInitFile string
-	SayHello      string
+	Image            string
+	CPUS             string
+	Disk             string
+	Name             string
+	Memory           string
+	CloudInitFile    string
+	MacAddress       string
+	NetworkInterface string
 }
 
 func Launch(launchReq *LaunchReq) (*Instance, error) {
@@ -69,8 +71,18 @@ func LaunchV2(launchReqV2 *LaunchReqV2) (*Instance, error) {
 		args = append(args, "--cloud-init", launchReqV2.CloudInitFile)
 	}
 
-	if launchReqV2.CloudInitFile != "" {
-		args = append(args, "--say-hello", launchReqV2.SayHello)
+	if launchReqV2.NetworkInterface != "" {
+		if launchReqV2.MacAddress != "" {
+			args = append(args, "--network", fmt.Sprintf("name=%s,model=manual,mac=\"%s\"",
+				launchReqV2.NetworkInterface,
+				launchReqV2.MacAddress,
+			))
+		} else {
+			// MAC address randomly assigned during VM initialization in this case
+			args = append(args, "--network", fmt.Sprintf("name=%s,model=manual",
+				launchReqV2.NetworkInterface,
+			))
+		}
 	}
 
 	result := exec.Command("multipass", args...)
