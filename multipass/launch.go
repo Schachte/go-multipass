@@ -73,13 +73,13 @@ func LaunchV2(launchReqV2 *LaunchReqV2) (*Instance, error) {
 
 	if launchReqV2.NetworkInterface != "" {
 		if launchReqV2.MacAddress != "" {
-			args = append(args, "--network", fmt.Sprintf("name=%s,model=manual,mac=\"%s\"",
+			args = append(args, "--network", fmt.Sprintf("name=%s,mode=manual,mac=\"%s\"",
 				launchReqV2.NetworkInterface,
 				launchReqV2.MacAddress,
 			))
 		} else {
 			// MAC address randomly assigned during VM initialization in this case
-			args = append(args, "--network", fmt.Sprintf("name=%s,model=manual",
+			args = append(args, "--network", fmt.Sprintf("name=%s,mode=manual",
 				launchReqV2.NetworkInterface,
 			))
 		}
